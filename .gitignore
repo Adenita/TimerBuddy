@@ -6,6 +6,10 @@
 .settings/
 *.sublime-workspace
 
+/node_modules
+npm-debug.log
+yarn-error.log
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
