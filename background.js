@@ -27,3 +27,10 @@ chrome.tabs.onRemoved.addListener((tabId) => {
         delete tabData[tabId];
     }
 });
+
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "getTabData") {
+        sendResponse(tabData);
+    }
+});
