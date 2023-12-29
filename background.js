@@ -34,3 +34,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(tabData);
     }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (tabData[tabId] && changeInfo.url) {
+        tabData[tabId].url = changeInfo.url;
+        tabData[tabId].startTime = Date.now();
+    }
+});
