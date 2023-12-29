@@ -3,5 +3,8 @@
   "name": "Timer Buddy",
   "version": "1.0",
   "description": "A lightweight chrome extension to track time spent on pages",
-  "author": "Adenita Luta"
+  "author": "Adenita Luta",
+  "action": {
+    "default_popup": "popup/timer-popup.html"
+  }
 }
