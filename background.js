@@ -20,3 +20,10 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         }
     })
 });
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    if (tabData[tabId]) {
+        // Remove tabData entry
+        delete tabData[tabId];
+    }
+});
