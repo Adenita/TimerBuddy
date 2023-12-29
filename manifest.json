@@ -11,5 +11,6 @@
       "48": "icons/hourglass.png"
     },
     "default_popup": "popup/timer-popup.html"
-  }
+  },
+  "permissions": ["tabs", "activeTab", "storage"]
 }
