@@ -25,8 +25,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             tabData[tabId].startTime = Date.now();
         }
         else {
-            tabData[tabId].url = changeInfo.url;
+            tabData[tabId].url = changeInfoUrl;
             tabData[tabId].totalTime = 0;
+            tabData[tabId].domain = extractDomain(changeInfoUrl)
             tabData[tabId].startTime = Date.now();
         }
     }
@@ -50,6 +51,10 @@ function domainsMatch(url1, url2) {
 }
 
 function extractDomain(url) {
+    if (url === "") {
+        return "newtab";
+    }
+
     if (url.startsWith('chrome://')) {
         const parts = url.split('/');
         return parts[2] || null;
