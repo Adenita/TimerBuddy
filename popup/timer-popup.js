@@ -51,14 +51,14 @@ function updatePopup(response) {
 
 /**
  * Format the given time in seconds to a human-readable string.
- * @param {number} milliseconds - The time in milliseconds to be formatted.
+ * @param {number} seconds - The time in seconds to be formatted.
  * @returns {string} - The formatted time string (e.g., "1h 30m 15s").
  */
-function formatTime(milliseconds) {
-    const seconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
 
-    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    return `${hours}h ${minutes}m ${remainingSeconds}s`;
 }
 
