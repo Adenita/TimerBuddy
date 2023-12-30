@@ -7,12 +7,12 @@ body {
 }
 
 .title-container {
-    text-align: center;
     padding-top: 20px;
 }
 
 .header {
-    margin: 0;
+    padding: 0;
+    margin: 0 0 0 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -24,30 +24,50 @@ body {
 
 #tabs-list-container {
     list-style: none;
-    padding: 0;
+    padding: 10px;
     width: 85%;
+}
+
+.tabs-list-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    width: 100%;
+    color: white;
+}
+
+.tabs-title-columns  {
+    padding: 10px;
+    background: navy;
+    border: 1px solid gray;
+}
+
+.tabs-list-grid-format {
+    display: grid;
+    grid-template-columns: 64% 35%;
+    grid-column-gap: 1%;
+    grid-row-gap: 0;
+}
+
+.container {
+    border: 1px solid navy;
+    display: flex;
+    align-items: center;
+    font-style: italic;
 }
 
 li {
     box-sizing: border-box;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
-    padding: 15px;
+    margin-bottom: 1%;
     width: 100%;
-    border-radius: 5%;
 }
 
 
 h3 {
-    margin: 5px 0;
     font-size: 1.3em;
-    white-space: nowrap;
+    white-space: pre-wrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-p {
-    margin: 0;
 }
 
 #no-tabs-message {
