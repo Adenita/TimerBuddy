@@ -17,7 +17,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const tabIdUrl = tabData[tabId] ?? tabData[tabId].url;
+    const tabIdUrl = tabData[tabId] && tabData[tabId].url;
     const changeInfoUrl = changeInfo.url;
     if (tabIdUrl && changeInfoUrl) {
         if (domainsMatch(tabIdUrl, changeInfoUrl)) {
