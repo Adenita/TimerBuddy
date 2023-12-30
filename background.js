@@ -9,17 +9,26 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             tabData[tabId] = {
                 startTime: currentTime,
                 totalTime: 0,
-                url: url
+                url: url,
+                domain: extractDomain(url)
             };
         }
     })
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tabData[tabId] && changeInfo.url) {
-        tabData[tabId].url = changeInfo.url;
-        tabData[tabId].totalTime = 0;
-        tabData[tabId].startTime = Date.now();
+    const tabIdUrl = tabData[tabId] ?? tabData[tabId].url;
+    const changeInfoUrl = changeInfo.url;
+    if (tabIdUrl && changeInfoUrl) {
+        if (domainsMatch(tabIdUrl, changeInfoUrl)) {
+            tabData[tabId].url = changeInfo.url;
+            tabData[tabId].startTime = Date.now();
+        }
+        else {
+            tabData[tabId].url = changeInfo.url;
+            tabData[tabId].totalTime = 0;
+            tabData[tabId].startTime = Date.now();
+        }
     }
 });
 
@@ -35,6 +44,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(tabData);
     }
 });
+
+function domainsMatch(url1, url2) {
+    return extractDomain(url1) === extractDomain(url2);
+}
+
+function extractDomain(url) {
+    if (url.startsWith('chrome://')) {
+        const parts = url.split('/');
+        return parts[2] || null;
+    }
+
+    const matches = url.match(/^https?:\/\/([^\/?#]+)(?:[\/?#]|$)|^[^:]+/i);
+    return matches && matches[1];
+}
+
 
 function updateTotalTime() {
     chrome.tabs.query({ active: true }, activeTabs => {
