@@ -44,7 +44,7 @@ function updatePopup(response) {
             const headerContainer = document.createElement('div')
             const header = document.createElement('h3');
             header.style.paddingLeft = '10px'
-            header.textContent = data.url;
+            header.textContent = data.domain;
 
             headerContainer.classList.add('container')
             headerContainer.appendChild(header);
