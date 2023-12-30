@@ -16,33 +16,50 @@ function updatePopup(response) {
     if (Object.keys(response).length === 0) {
         // display the no tab message
         noTabsMessage.style.display = 'block';
+        tabsListContainer.style.display = 'none';
     }
     else {
         // Display the list
         noTabsMessage.style.display = 'none';
 
+        const titleRow = document.createElement('li');
+        titleRow.classList.add('tabs-list-title', 'tabs-list-grid-format');
+
+        const activeTitle = document.createElement('label');
+        activeTitle.textContent = 'Active Page';
+        activeTitle.classList.add('tabs-title-columns')
+        titleRow.appendChild(activeTitle);
+
+        const timeTitle = document.createElement('label');
+        timeTitle.textContent = 'Time';
+        timeTitle.classList.add('tabs-title-columns')
+        titleRow.appendChild(timeTitle);
+
+        tabsListContainer.appendChild(titleRow);
+
         for (const [ tabId, data] of Object.entries(response)) {
             const listItem = document.createElement('li');
+            listItem.classList.add('tabs-list-grid-format');
+
+            const headerContainer = document.createElement('div')
             const header = document.createElement('h3');
+            header.style.paddingLeft = '10px'
+            header.textContent = data.url;
 
-            const urlText = document.createElement('span');
-            urlText.style.fontWeight = 'bold';
-            urlText.textContent = 'URL: ';
+            headerContainer.classList.add('container')
+            headerContainer.appendChild(header);
 
-            const urlValue = document.createElement('span');
-            urlValue.style.fontWeight = 'normal';
-            urlValue.style.fontStyle = 'italic';
-            urlValue.textContent = data.url;
-
-            header.appendChild(urlText);
-            header.appendChild(urlValue);
-            listItem.appendChild(header);
-
+            const paragraphContainer = document.createElement('div')
             const paragraph = document.createElement('p');
             paragraph.style.fontSize = '1.2em';
             paragraph.style.fontStyle = 'italic';
-            paragraph.textContent = `Time Elapsed: ${formatTime(data.totalTime)}`;
-            listItem.appendChild(paragraph);
+            paragraph.style.paddingLeft = '10px'
+            paragraph.textContent = `${formatTime(data.totalTime)}`;
+
+            paragraphContainer.classList.add('container')
+            paragraphContainer.appendChild(paragraph)
+            listItem.appendChild(headerContainer);
+            listItem.appendChild(paragraphContainer);
 
             tabsListContainer.appendChild(listItem);
         }
