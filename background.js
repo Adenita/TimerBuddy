@@ -15,6 +15,14 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     })
 });
 
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (tabData[tabId] && changeInfo.url) {
+        tabData[tabId].url = changeInfo.url;
+        tabData[tabId].totalTime = 0;
+        tabData[tabId].startTime = Date.now();
+    }
+});
+
 chrome.tabs.onRemoved.addListener((tabId) => {
     if (tabData[tabId]) {
         delete tabData[tabId];
@@ -25,14 +33,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getTabData") {
         sendResponse(tabData);
-    }
-});
-
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tabData[tabId] && changeInfo.url) {
-        tabData[tabId].url = changeInfo.url;
-        tabData[tabId].totalTime = 0;
-        tabData[tabId].startTime = Date.now();
     }
 });
 
