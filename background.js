@@ -1,5 +1,8 @@
 let tabData = {};
 let tabDomainMap = {};
+
+getTabDataFromStorage();
+
 chrome.tabs.onActivated.addListener((activeInfo) => {
     const tabId = activeInfo.tabId;
     const currentTime = new Date().getTime();
@@ -14,8 +17,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                 totalTime: 0,
                 url: url
             }
+            saveTabDataToStorage();
         }
-    })
+    });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -37,15 +41,20 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                     totalTime: 0,
                     url: tab.url
                 }
+                saveTabDataToStorage();
             }
         }
     }
 });
 
-function deleteDomainData(domain) {
-    if (tabData[domain]) {
-        delete tabData[domain];
-    }
+function saveTabDataToStorage() {
+    chrome.storage.local.set({ 'tabData': tabData }, () => {});
+}
+
+function getTabDataFromStorage() {
+    chrome.storage.local.get(['tabData'], function(result) {
+        tabData = result.tabData || {};
+    });
 }
 
 chrome.tabs.onRemoved.addListener((tabId) => {
