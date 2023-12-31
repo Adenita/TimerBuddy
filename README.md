@@ -49,6 +49,3 @@ the data from the chrome storage.
 3. Navigate to `chrome://extensions/`.
 4. Enable "Developer mode" in the top right corner.
 5. Click on "Load unpacked" and select the folder containing your extension files.
-
-### Contact
-For further questions you can contact me at my email: nittaluta@gmail.com
