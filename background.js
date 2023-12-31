@@ -57,6 +57,13 @@ function getTabDataFromStorage() {
     });
 }
 
+function deleteTabDataFromStorage(domain) {
+    if (tabData[domain]) {
+        delete tabData[domain];
+        saveTabDataToStorage();
+    }
+}
+
 chrome.tabs.onRemoved.addListener((tabId) => {
     if (tabData[tabId]) {
         delete tabData[tabId];
@@ -67,6 +74,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getTabData") {
         sendResponse(tabData);
+    }
+
+    if (request.action === "deleteDomain") {
+        deleteTabDataFromStorage(request.domain)
+        return true;
     }
 });
 
