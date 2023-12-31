@@ -15,5 +15,10 @@
   "permissions": ["tabs", "activeTab", "storage"],
   "background": {
     "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/hourglass16.png",
+    "24": "icons/hourglass.png",
+    "48": "icons/hourglass.png"
   }
 }
