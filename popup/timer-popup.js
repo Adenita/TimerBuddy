@@ -35,16 +35,14 @@ function updatePopup(response) {
         timeTitle.classList.add('tabs-title-columns')
         titleRow.appendChild(timeTitle);
 
-        tabsListContainer.appendChild(titleRow);
-
-        for (const [ tabId, data] of Object.entries(response)) {
+        for (const [ domain, data] of Object.entries(response)) {
             const listItem = document.createElement('li');
             listItem.classList.add('tabs-list-grid-format');
 
             const headerContainer = document.createElement('div')
             const header = document.createElement('h3');
             header.style.paddingLeft = '10px'
-            header.textContent = data.domain;
+            header.textContent = domain;
 
             headerContainer.classList.add('container')
             headerContainer.appendChild(header);
@@ -78,4 +76,3 @@ function formatTime(seconds) {
 
     return `${hours}h ${minutes}m ${remainingSeconds}s`;
 }
-
