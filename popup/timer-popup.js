@@ -35,6 +35,14 @@ function updatePopup(response) {
         timeTitle.classList.add('tabs-title-columns')
         titleRow.appendChild(timeTitle);
 
+        const xTitle = document.createElement('label');
+        xTitle.textContent = 'X';
+        xTitle.classList.add('tabs-title-columns');
+        xTitle.style.paddingLeft = '3px';
+        titleRow.appendChild(xTitle);
+
+        tabsListContainer.appendChild(titleRow);
+
         for (const [ domain, data] of Object.entries(response)) {
             const listItem = document.createElement('li');
             listItem.classList.add('tabs-list-grid-format');
@@ -56,12 +64,23 @@ function updatePopup(response) {
 
             paragraphContainer.classList.add('container')
             paragraphContainer.appendChild(paragraph)
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'X';
+            deleteButton.classList.add('delete-button');
+
+            deleteButton.addEventListener('click', () => {
+                deleteDomain(domain)
+            });
+
             listItem.appendChild(headerContainer);
             listItem.appendChild(paragraphContainer);
+            listItem.appendChild(deleteButton);
 
             tabsListContainer.appendChild(listItem);
         }
     }
+
 }
 
 /**
@@ -75,4 +94,13 @@ function formatTime(seconds) {
     const remainingSeconds = seconds % 60;
 
     return `${hours}h ${minutes}m ${remainingSeconds}s`;
+}
+
+/**
+ * Make request to backend script to delete tab data for domain.
+ * @param {string} domain - the domain to be deleted.
+ * @returns void.
+ */
+function deleteDomain(domain) {
+    chrome.runtime.sendMessage({ action: 'deleteDomain', domain }, () => {});
 }
