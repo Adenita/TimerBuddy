@@ -1,54 +1,79 @@
 let tabData = {};
+let tabDomainMap = {};
+
+getTabDataFromStorage();
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
     const tabId = activeInfo.tabId;
     const currentTime = new Date().getTime();
     chrome.tabs.get(tabId, (tab) => {
         const url = tab.url;
-        if (!tabData[tabId]) {
-            tabData[tabId] = {
+        const domain = extractDomain(url);
+        tabDomainMap[tabId] = domain;
+
+        if (!tabData[domain]) {
+            tabData[domain] = {
                 startTime: currentTime,
                 totalTime: 0,
-                url: url,
-                domain: extractDomain(url)
-            };
+                url: url
+            }
+            saveTabDataToStorage();
         }
-    })
+    });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const tabIdUrl = tabData[tabId] && tabData[tabId].url;
-    const changeInfoUrl = changeInfo.url;
-    if (tabIdUrl && changeInfoUrl) {
-        if (domainsMatch(tabIdUrl, changeInfoUrl)) {
-            tabData[tabId].url = changeInfo.url;
-            tabData[tabId].startTime = Date.now();
+    const domain = tabDomainMap[tabId];
+    const currentTabUrl = tab.url;
+    const previousTabUrl = tabData[domain] && tabData[domain].url;
+
+    if (currentTabUrl && previousTabUrl && currentTabUrl !== previousTabUrl) {
+        const changedDomain = extractDomain(tab.url);
+        if (domain === changedDomain) {
+            tabData[domain].url = changeInfo.url;
+            tabData[domain].startTime = Date.now();
         }
         else {
-            tabData[tabId].url = changeInfoUrl;
-            tabData[tabId].totalTime = 0;
-            tabData[tabId].domain = extractDomain(changeInfoUrl)
-            tabData[tabId].startTime = Date.now();
+            tabDomainMap[tabId] = changedDomain;
+            if (!tabData[changedDomain]) {
+                tabData[changedDomain] = {
+                    startTime: Date.now(),
+                    totalTime: 0,
+                    url: tab.url
+                }
+                saveTabDataToStorage();
+            }
         }
     }
 });
 
-chrome.tabs.onRemoved.addListener((tabId) => {
-    if (tabData[tabId]) {
-        delete tabData[tabId];
-    }
-});
+function saveTabDataToStorage() {
+    chrome.storage.local.set({ 'tabData': tabData }, () => {});
+}
 
+function getTabDataFromStorage() {
+    chrome.storage.local.get(['tabData'], function(result) {
+        tabData = result.tabData || {};
+    });
+}
+
+function deleteTabDataFromStorage(domain) {
+    if (tabData[domain]) {
+        delete tabData[domain];
+        saveTabDataToStorage();
+    }
+}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getTabData") {
         sendResponse(tabData);
     }
-});
 
-function domainsMatch(url1, url2) {
-    return extractDomain(url1) === extractDomain(url2);
-}
+    if (request.action === "deleteDomain") {
+        deleteTabDataFromStorage(request.domain)
+        return true;
+    }
+});
 
 function extractDomain(url) {
     if (url === "") {
@@ -67,16 +92,16 @@ function extractDomain(url) {
 
 function updateTotalTime() {
     chrome.tabs.query({ active: true }, activeTabs => {
-        activeTabs.forEach(tab => {
-            const tabId = tab.id;
-            if (tabData[tabId]) {
-                tabData[tabId].totalTime += 1;
-            }
-        });
-
         if (activeTabs.length === 0) {
             clearInterval(intervalId);
         }
+
+        activeTabs.forEach(tab => {
+            const tabDomain = extractDomain(tab.url);
+            if (tabData[tabDomain]) {
+                tabData[tabDomain].totalTime += 1;
+            }
+        });
     });
 }
 
